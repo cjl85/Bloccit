@@ -15,3 +15,15 @@ describe("routes : static", () => {
     });
   });
 });
+
+describe( "GET /about", () => {
+
+    const about = "About Us";
+    it( `should return body containing the string "${about}"`, (done) => {
+      request.get(base, (err, res, body) => {
+        expect(res.statusCode).toBe(200);
+        expect(body).toContain("About Us");
+        done();
+      });
+    });
+});
