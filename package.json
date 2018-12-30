@@ -4,7 +4,9 @@
   "description": "export NODE_ENV=test && jasmine",
   "main": "index.js",
   "test": "A Reddit-like application for users to discuss and share content",
-  "start": "node src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
   "author": "",
   "license": "ISC",
   "devDependencies": {
@@ -13,6 +15,7 @@
   },
   "dependencies": {
     "dotenv": "^5.0.0",
+    "ejs": "^2.5.7",
     "express": "^4.16.2"
   }
 }
