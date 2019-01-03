@@ -1,8 +1,8 @@
-const Advertisement = require( "./models" ).Advertisement;
+const Flair = require( "./models" ).Flair;
 
 module.exports = {
   selectAll(callback) {
-    return Advertisement.all()
+    return Flair.all()
       .then((adverts) => { callback(null, adverts); })
       .catch((err) => { callback(err);
     })
@@ -10,7 +10,7 @@ module.exports = {
 
   select(id, callback) {
     return
-      Advertisement.findById(id)
+      Flair.findById(id)
       .then((advert) => { callback(null, advert);})
       .catch((err) => {callback( err);})
 
@@ -18,7 +18,7 @@ module.exports = {
   ,
   insert(data, callback) {
     return
-      Advertisement.create({
+      Flair.create({
         title: data.title,
         description: data.description
       })
@@ -29,9 +29,9 @@ module.exports = {
   ,
   update(id, data, callback) {
     return
-      Advertisement.findById(id)
+      Flair.findById(id)
       .then((advert) => {
-        if (!advert) { return callback( "Advertisement not found."); }
+        if (!advert) { return callback( "Flair not found."); }
         advert.update(data, {
           fields: Object.keys( data)
         })
@@ -42,7 +42,7 @@ module.exports = {
 
   delete(id, callback) {
     return
-      Advertisement.destroy({ where: {id} })
+      Flair.destroy({ where: {id} })
       .then( (advert) => { callback(null, advert); })
       .catch((err) => {callback(err);})
 
