@@ -1,117 +1,84 @@
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
+const User = require("../../src/db/models").User;
 
 describe("Post", () => {
 
+  const main = {
+    topics: [{
+      title: "Expeditions to Alpha Centauri",
+      description: "A compilation of reports from recent visits to the star system."
+    }, {
+      title: "Challenges of interstellar travel",
+      description: "1. The Wi-Fi is terrible"
+    } ],
+    posts: [{
+      title: "My first visit to Proxima Centauri b",
+      body: "I saw some rocks."
+    }, {
+      title: "Pros of Cryosleep during the long journey",
+      body: "1. Not having to answer the 'are we there yet?' question."
+    } ],
+    users: [{
+      email: "starman@tesla.com",
+      password: "Trekkie4lyfe"
+    }, {
+      email: "ada@example.com",
+      password: "password"
+    }]
+  };
+
   beforeEach((done) => {
 
-    describe("#create()", () => {
-
-     it("should create a post object with a title, body, and assigned topic", (done) => {
-//#1
-       Post.create({
-         title: "Pros of Cryosleep during the long journey",
-         body: "1. Not having to answer the 'are we there yet?' question.",
-         topicId: this.topic.id
-       })
-       .then((post) => {
-
-//#2
-         expect(post.title).toBe("Pros of Cryosleep during the long journey");
-         expect(post.body).toBe("1. Not having to answer the 'are we there yet?' question.");
-         done();
-
-       })
-       .catch((err) => {
-         console.log(err);
-         done();
-       });
-     });
-
-     it("should not create a post with missing title, body, or assigned topic", (done) => {
-     Post.create({
-       title: "Pros of Cryosleep during the long journey"
-     })
-     .then((post) => {
-
-      // the code in this block will not be evaluated since the validation error
-      // will skip it. Instead, we'll catch the error in the catch block below
-      // and set the expectations there
-
-       done();
-
-     })
-     .catch((err) => {
-
-       expect(err.message).toContain("Post.body cannot be null");
-       expect(err.message).toContain("Post.topicId cannot be null");
-       done();
-
-     })
-   });
-
-   });
-
-   describe("#setTopic()", () => {
-
-     it("should associate a topic and a post together", (done) => {
-
-// #1
-       Topic.create({
-         title: "Challenges of interstellar travel",
-         description: "1. The Wi-Fi is terrible"
-       })
-       .then((newTopic) => {
-
-// #2
-         expect(this.post.topicId).toBe(this.topic.id);
-// #3
-         this.post.setTopic(newTopic)
-         .then((post) => {
-// #4
-           expect(post.topicId).toBe(newTopic.id);
-           done();
-
-         });
-       })
-     });
-   });
-
-   describe("#getTopic()", () => {
-
-     it("should return the associated topic", (done) => {
-
-       this.post.getTopic()
-       .then((associatedTopic) => {
-         expect(associatedTopic.title).toBe("Expeditions to Alpha Centauri");
-         done();
-       });
-     });
-   });
-//#1
     this.topic;
     this.post;
+    this.user;
+
     sequelize.sync({force: true}).then((res) => {
 
-//#2
-      Topic.create({
-        title: "Expeditions to Alpha Centauri",
-        description: "A compilation of reports from recent visits to the star system."
-      })
-      .then((topic) => {
-        this.topic = topic;
-//#3
-        Post.create({
-          title: "My first visit to Proxima Centauri b",
-          body: "I saw some rocks.",
-//#4
-          topicId: this.topic.id
-        })
-        .then((post) => {
-          this.post = post;
+      const values = main.users[0];
+
+      User.create(values)
+      .then((user) => {
+        this.user = user;
+
+        const values = {...main.topics[0]};
+        values.posts = [{...main.posts[0]}];
+        values.posts[0].userId = user.id;
+
+        Topic.create(values, {include: {model: Post, as: "posts"}})
+        .then((topic) => {
+          this.topic = topic;
+          this.post = topic.posts[0];
+          done();
+        } )
+        .catch((err) => {
+          console.log(err);
           done();
         });
+      });
+    });
+  });
+
+
+
+  describe(".create()", () => {
+
+    it("should create a post with specified " +
+        "title, body, and associated topic and user", (done) => {
+
+      const values = {...main.posts[1]};
+      values.topicId = this.topic.id;
+      values.userId = this.user.id;
+
+      Post.create(values)
+      .then((post) => {
+        expect(post.title).toBe(values.title);
+        expect(post.body).toBe(values.body);
+        expect(post.topicId).toBe(values.topicId);
+        expect(post.userId).toBe(values.userId);
+        done();
       })
       .catch((err) => {
         console.log(err);
@@ -119,5 +86,101 @@ describe("Post", () => {
       });
     });
 
+    it("should NOT create a post with missing " +
+        "title, body, or associated topic and user", (done) => {
+
+      Post.create({title: main.posts[1].title})
+      .then((post) => {
+        done();
+      } )
+      .catch((err) => {
+        expect(err.message).toContain("notNull Violation");
+        expect(err.message).toContain("Post.body cannot be null");
+        expect(err.message).toContain("Post.topicId cannot be null");
+        expect(err.message).toContain("Post.userId cannot be null");
+        done();
+      });
+    });
+
   });
-});
+
+
+
+  describe(".setTopic()", () => {
+
+    it("should associate post with specified topic", (done) => {
+
+      const post = this.post;
+      const oldTopic = this.topic;
+      expect(post.topicId).toBe(oldTopic.id);
+
+      const values = main.topics[1];
+
+      Topic.create(values)
+      .then((newTopic) => {
+
+        post.setTopic(newTopic)
+        .then((post) => {
+          expect(post.topicId).not.toBe(oldTopic.id);
+          expect(post.topicId).toBe(newTopic.id);
+          done();
+        });
+      });
+    });
+
+  });
+
+
+
+  describe(".getTopic()", () => {
+
+    it("should return the associated topic", (done) => {
+
+      this.post.getTopic()
+      .then((topic) => {
+        expect(topic.title).toBe(this.topic.title);
+        done();
+      });
+    });
+
+  });
+
+
+
+  describe(".setUser()", () => {
+
+    it("should associate post with specified user", (done) => {
+
+      const post = this.post;
+      const oldUser = this.user;
+      expect(post.userId).toBe(oldUser.id);
+
+      const values = main.users[1];
+
+      User.create(values)
+      .then((newUser) => {
+
+        post.setUser(newUser)
+        .then((post) => {
+          expect(post.userId).not.toBe(oldUser.id);
+          expect(post.userId).toBe(newUser.id);
+          done();
+        });
+      });
+    });
+  });
+
+
+
+  describe(".getUser()", () => {
+
+    it("should return the associated user", (done) => {
+
+      this.post.getUser()
+      .then((user) => {
+        expect(user.email).toBe(this.user.email);
+        done();
+      });
+    });
+
+  });

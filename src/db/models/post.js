@@ -5,23 +5,31 @@ module.exports = (sequelize, DataTypes) => {
        type: DataTypes.STRING,
        allowNull: false
      },
-     body: DataTypes.STRING,
      body: {
        type: DataTypes.STRING,
        allowNull: false
      },
-
      topicId: {
        type: DataTypes.INTEGER,
        allowNull: false
      }
-   }, {});
+     },
+      userId: {
+        type: DataTypes.INTEGER,
+   allowNull: false
+     }
+  }, {});
    Post.associate = function(models) {
      // associations can be defined here
 
-     Post.belongsTo(models.Topic, {
+   Post.belongsTo(models.Topic, {
        foreignKey: "topicId",
-       onDelete: "CASCADE"
+         onDelete: "CASCADE"
+     });
+
+   Post.belongsTo(models.User, {
+      foreignKey: "userId",
+        onDelete: "CASCADE"
      });
   }, {});
   Post.associate = function(models) {
