@@ -239,3 +239,112 @@ describe("GET /topics/:topicId/posts/new", () => {
          });
      });
    });
+
+   describe("getPoints()", () => {
+
+    it("should return the sum of associated vote values", (done) => {
+
+      const options = {include: [{model: Vote, as: "votes"}]};
+
+      Post.findByPk(this.post.id, options)
+      .then((post) => {
+        expect(post.getPoints()).toBe(0); // no votes
+
+        const values = {
+          value: UPVOTE,
+          postId: post.id,
+          userId: this.user.id,
+        };
+
+        Vote.create(values)
+        .then((vote) => {
+          expect(vote.value).toBe(1);
+
+          post.reload(options)
+          .then((post) => {
+            expect(post.getPoints()).toBe(1); // +1
+
+            vote.value = -1;
+            vote.save()
+            .then((vote) => {
+              expect(vote.value).toBe(-1);
+
+              post.reload(options)
+              .then((post) => {
+                expect(post.getPoints()).toBe(-1); // +1
+                done();
+              });
+            });
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+  });
+
+  describe("hasUpvoteFor()", () => {
+
+    it("should return TRUE if user has upvoted", (done) => {
+
+      const user = this.user;
+      const options = {include: [{model: Vote, as: "votes"}]};
+
+      Post.findById(this.post.id, options
+      .then((post) => {
+        expect(post.hasUpvoteFor(user.id)).toBeFalsy();
+
+        const values = {value: 1, postId: post.id, userId: user.id,};
+
+        Vote.create(values)
+        .then((vote) => {
+          expect(vote.value).toBe(1);
+
+          post.reload(options)
+          .then((post) => {
+            expect(post.hasUpvoteFor(user.id)).toBeTruthy();
+            expect(post.hasDownvoteFor(user.id)).toBeFalsy();
+            done();
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+  });
+
+  describe("hasDownvoteFor()", () => {
+
+    it("should return TRUE if user has downvoted", (done) => {
+
+      const user = this.user;
+      const options = {include: [{model: Vote, as: "votes"}]};
+
+      Post.findById(this.post.id, options
+      .then((post) => {
+        expect(post.hasDownvoteFor(user.id)).toBeFalsy();
+
+        const values = {value: -1, postId: post.id, userId: user.id,};
+
+        Vote.create(values)
+        .then((vote) => {
+          expect(vote.value).toBe(-1);
+
+          post.reload(options)
+          .then((post) => {
+            expect(post.hasDownvoteFor(user.id)).toBeTruthy();
+            expect(post.hasUpvoteFor(user.id)).toBeFalsy();
+            done();
+          });
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+  });
