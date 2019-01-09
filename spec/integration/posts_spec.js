@@ -294,7 +294,7 @@ describe("GET /topics/:topicId/posts/new", () => {
 
       Post.findById(this.post.id, options
       .then((post) => {
-        expect(post.hasUpvoteFor(user.id)).toBeFalsy();
+        expect(post.hasUpvoteFor(user.id)).toBeFalse();
 
         const values = {value: 1, postId: post.id, userId: user.id,};
 
@@ -304,8 +304,8 @@ describe("GET /topics/:topicId/posts/new", () => {
 
           post.reload(options)
           .then((post) => {
-            expect(post.hasUpvoteFor(user.id)).toBeTruthy();
-            expect(post.hasDownvoteFor(user.id)).toBeFalsy();
+            expect(post.hasUpvoteFor(user.id)).toBeTrue();
+            expect(post.hasDownvoteFor(user.id)).toBeFalse();
             done();
           });
         });
@@ -326,7 +326,7 @@ describe("GET /topics/:topicId/posts/new", () => {
 
       Post.findById(this.post.id, options
       .then((post) => {
-        expect(post.hasDownvoteFor(user.id)).toBeFalsy();
+        expect(post.hasDownvoteFor(user.id)).toBeFalse();
 
         const values = {value: -1, postId: post.id, userId: user.id,};
 
@@ -336,8 +336,8 @@ describe("GET /topics/:topicId/posts/new", () => {
 
           post.reload(options)
           .then((post) => {
-            expect(post.hasDownvoteFor(user.id)).toBeTruthy();
-            expect(post.hasUpvoteFor(user.id)).toBeFalsy();
+            expect(post.hasDownvoteFor(user.id)).toBeTrue();
+            expect(post.hasUpvoteFor(user.id)).toBeFalse();
             done();
           });
         });
