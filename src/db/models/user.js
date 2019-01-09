@@ -37,6 +37,11 @@ password: {
      as: "votes"
    });
 
+   User.hasMany(models.Favorite, {
+     foreignKey: "userId",
+     as: "favorites"
+   });
+
   User.prototype.isAdmin = function() {
      return this.role === "admin";
    };

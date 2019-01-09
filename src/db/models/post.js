@@ -41,6 +41,25 @@ module.exports = (sequelize, DataTypes) => {
      foreignKey: "postId",
      as: "votes"
    });
+
+   Post.hasMany(models.Favorite, {
+     foreignKey: "postId",
+     as: "favorites"
+   });
+
+   Post.afterCreate((post, callback) => {
+     return models.Favorite.create({
+       userId: post.userId,
+       postId: post.id
+     });
+   });
+   Post.afterCreate((post, callback) => {
+     return models.Favorite.create({
+        value: 1,
+       userId: post.userId,
+       postId: post.id
+     });
+   });
   Post.associate = function(models) {
     // associations can be defined here
   };
@@ -55,5 +74,9 @@ module.exports = (sequelize, DataTypes) => {
     .map((v) => { return v.value })
     .reduce((prev, next) => { return prev + next });
 };
+
+Post.prototype.getFavoriteFor = function(userId){
+     return this.favorites.find((favorite) => { return favorite.userId == userId });
+   };
   return Post;
 };
