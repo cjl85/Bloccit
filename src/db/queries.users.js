@@ -24,4 +24,25 @@ module.exports = {
     })
   }
 
+  getUser( id, callback ) {
+
+    User.scope("favoritePosts").findById(id)
+    .then((user) => {
+      if (!user) {callback(404);}
+      else {
+        console.log(user.favorites);
+
+            Favorite.scope({method: ["favoritedBy", id]}).findAll()
+            .then((favorites) => {
+              console.log(favorites);
+
+              callback(null, {user, posts, comments, favorites})
+            })
+            .catch((err) => {callback(err);})
+          });
+        });
+      }
+    });
+  }
+
 }
