@@ -42,6 +42,14 @@ password: {
      as: "favorites"
    });
 
+   User.addScope("favoritePost", {
+         model: models.Favorite,
+            as: "favorites",
+    foreignKey: "userId",
+         order: "createdAt", "DESC"
+       }
+   };
+
   User.prototype.isAdmin = function() {
      return this.role === "admin";
    };

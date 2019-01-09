@@ -14,12 +14,20 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     Favorite.belongsTo(models.Post, {
       foreignKey: "postId",
-      onDelete: "CASCADE"
+        onDelete: "CASCADE"
     });
 
     Favorite.belongsTo(models.User, {
       foreignKey: "userId",
-      onDelete: "CASCADE"
+        onDelete: "CASCADE"
+    });
+  };
+
+  Favorite.addScope(models.User, {
+        include: models.Post,
+     foreignKey: "userId",
+          order: "createdAt", "DESC"
+      }
     });
   };
   return Favorite;

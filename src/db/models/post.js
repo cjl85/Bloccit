@@ -32,12 +32,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "CASCADE"
      });
   }, {});
-  Post.hasMany(models.Comment, {
+   Post.hasMany(models.Comment, {
      foreignKey: "postId",
      as: "comments"
    });
 
-  Post.hasMany(models.Vote, {
+   Post.hasMany(models.Vote, {
      foreignKey: "postId",
      as: "votes"
    });
@@ -60,11 +60,11 @@ module.exports = (sequelize, DataTypes) => {
        postId: post.id
      });
    });
-  Post.associate = function(models) {
+   Post.associate = function(models) {
     // associations can be defined here
   };
 
-  Post.prototype.getPoints = function(){
+   Post.prototype.getPoints = function(){
 
 // #1
   if(this.votes.length === 0) return 0
@@ -75,8 +75,18 @@ module.exports = (sequelize, DataTypes) => {
     .reduce((prev, next) => { return prev + next });
 };
 
-Post.prototype.getFavoriteFor = function(userId){
+   Post.prototype.getFavoriteFor = function(userId){
      return this.favorites.find((favorite) => { return favorite.userId == userId });
    };
+
+   Post.addScope("lastFiveFor", (userId) => {
+ // #2
+     return {
+       where: { userId: userId},
+ // #3
+       limit: 5,
+       order: [["createdAt", "DESC"]]
+     }
+   });
   return Post;
 };
