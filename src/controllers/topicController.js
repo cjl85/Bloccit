@@ -14,10 +14,6 @@ module.exports = {
   },
 
   new(req, res, next){
-      res.render("topics/new");
-  },
-
-  new(req, res, next){
  // #2
      const authorized = new Authorizer(req.user).new();
 
