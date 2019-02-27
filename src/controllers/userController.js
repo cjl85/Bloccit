@@ -27,7 +27,7 @@ module.exports = {
          })
        }
      });
-   }
+   },
 
    signInForm(req, res, next){
      res.render("users/sign_in");
@@ -43,7 +43,7 @@ module.exports = {
          res.redirect("/");
        }
      })
-   }
+   },
 
    signOut(req, res, next){
      show(req, res, next){

@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     color: {
       allowNull: false,
       type: DataTypes.STRING
+    }
   }, {});
   Flair.associate = function(models) {
     // associations can be defined here
