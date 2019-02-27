@@ -6,7 +6,7 @@ module.exports = {
       .then((adverts) => { callback(null, adverts); })
       .catch((err) => { callback(err);
     })
-  }
+  },
 
   select(id, callback) {
     return
@@ -14,8 +14,8 @@ module.exports = {
       .then((advert) => { callback(null, advert);})
       .catch((err) => {callback( err);})
 
-  }
-  ,
+  },
+
   insert(data, callback) {
     return
       Flair.create({
@@ -25,8 +25,8 @@ module.exports = {
       .then( (advert) => { callback(null, advert); })
       .catch((err) => { callback(err); })
 
-  }
-  ,
+  },
+
   update(id, data, callback) {
     return
       Flair.findById(id)
@@ -38,7 +38,7 @@ module.exports = {
         .then((advert) => { callback(null, advert); } )
         .catch((err) => { callback(err);});
       })
-  }
+  },
 
   delete(id, callback) {
     return

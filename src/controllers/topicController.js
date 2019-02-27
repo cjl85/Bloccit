@@ -11,11 +11,11 @@ module.exports = {
           res.render("topics/index", {topics});
       }
     })
-  }
+  },
 
   new(req, res, next){
       res.render("topics/new");
-  }
+  },
 
   new(req, res, next){
  // #2
@@ -27,7 +27,7 @@ module.exports = {
        req.flash("notice", "You are not authorized to do that.");
        res.redirect("/topics");
      }
-   }
+   },
 
    create(req, res, next){
 
@@ -53,7 +53,7 @@ module.exports = {
         req.flash("notice", "You are not authorized to do that.");
         res.redirect("/topics");
       }
-    }
+    },
 
   show(req, res, next){
 
@@ -65,7 +65,7 @@ module.exports = {
          res.render("topics/show", {topic});
        }
     });
-  }
+  },
 
   destroy(req, res, next){
 
@@ -77,7 +77,7 @@ module.exports = {
          res.redirect(303, "/topics")
        }
      });
-   }
+   },
 
   edit(req, res, next){
 
@@ -99,7 +99,7 @@ module.exports = {
          }
        }
      });
-   }
+   },
 
    update(req, res, next){
 

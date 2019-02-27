@@ -21,7 +21,7 @@ module.exports = {
     } else {
       return next();
     }
-  }
+  },
 
   validateUsers(req, res, next) {
      if(req.method === "POST") {
@@ -40,7 +40,7 @@ module.exports = {
      } else {
        return next();
      }
-   }
+   },
 
    validateComments(req, res, next) {
      if(req.method === "POST") {

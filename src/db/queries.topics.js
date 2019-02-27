@@ -15,7 +15,7 @@ module.exports = {
     .catch((err) => {
       callback(err);
     })
-  }
+  },
 
   getTopic(id, callback){
      return Topic.findById(id, {
@@ -32,7 +32,7 @@ module.exports = {
      .catch((err) => {
        callback(err);
      })
-   }
+   },
 
   addTopic(newTopic, callback){
    return Topic.create({
@@ -45,7 +45,7 @@ module.exports = {
    .catch((err) => {
      callback(err);
    })
- }
+ },
 
  deleteTopic(req, callback){
 
@@ -73,7 +73,7 @@ module.exports = {
     .catch((err) => {
       callback(err);
     });
-  }
+  },
 
   updateTopic(req, updatedTopic, callback){
 

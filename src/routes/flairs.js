@@ -9,7 +9,7 @@ router.get("/flairs/new", flairController.new);
 
 router.post("/flairs/create", flairController.create);
 
-router.get("/flairs/:id", flairController.show);
+router.get("/flairs/:id/view", flairController.view);
 
 router.get("/flairs/:id/edit", flairController.edit);
 
