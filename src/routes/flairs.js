@@ -5,7 +5,7 @@ const flairController = require( "../controllers/flairController.js" );
 
 router.get("/flairs", flairController.index);
 
-router.get("/flairs/new", flairController.new);
+router.get("/flairs/add", flairController.add);
 
 router.post("/flairs/create", flairController.create);
 
